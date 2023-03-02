@@ -1,0 +1,13 @@
+*.db
+temp*.txt
+*.log
+*.so
+*.xls*
+*.json
+*.pckl
+*.pdf
+
+env/
+__pycache__/
+cherrypy/cherrypy/
+pickle.pckl

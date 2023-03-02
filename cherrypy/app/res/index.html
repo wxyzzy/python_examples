@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome form</title>
+	<link rel="stylesheet" type="text/css" href="/static/main.css"></link>
+	<script type="text/javascript" src="/static/main.js"></script>
+</head>
+<body onload="changeMyText3()">
+	<h1 id='sub_title'>Sub title</h1>
+	<p id='par_1'>This is a paragraph</p>
+	<p id='par_2'>This is another paragraph</p>
+    <form action="greetUser" method="GET">
+            <p>What is your name?
+            <input type="text" name="name" />
+            <input type="submit" /></p>
+    </form>
+	<input type="button"  value="version 1" onclick="changeMyText()" />
+	<input type="button"  value="version 2" onclick="changeMyText2()" />
+	<input type="button"  value="version 3" onclick="changeMyText3()" />
+</body>
+</html>

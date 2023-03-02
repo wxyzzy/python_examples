@@ -1,0 +1,20 @@
+
+/*verdana;courier;calibri;Lucida Sans;Century Gothic;Cambria;
+Consolas;Monaco;Comic Sans MS;Brush Script MT;papyrus;*/
+
+
+body {
+  background-color: white;
+}
+
+h1 {
+  font-family: Lucida Sans;
+  font-style: italic;
+  text-align: left;
+  font-size: 18px;
+}
+
+p {
+  font-family: papyrus;
+  font-size: 14px;
+}
