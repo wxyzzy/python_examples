@@ -4,6 +4,12 @@
 # Wing project file                                              #
 ##################################################################
 [project attributes]
+proj.directory-list = [{'dirloc': loc('.'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True}]
 proj.file-type = 'normal'
 [user attributes]
 guimgr.overall-gui-state = {'windowing-policy': 'combined-window',
@@ -24,8 +30,8 @@ guimgr.overall-gui-state = {'windowing-policy': 'combined-window',
                                {'tree-state': {'file-sort-method': 'by name',
         'list-files-first': False,
         'tree-states': {'deep': {'expanded-nodes': [],
-                                 'selected-nodes': [],
-                                 'top-node': ()}},
+                                 'selected-nodes': [(0,)],
+                                 'top-node': (0,)}},
         'tree-style': 'deep'}}),
                               ('source-assistant',
                                'tall',
@@ -382,7 +388,7 @@ guimgr.overall-gui-state = {'windowing-policy': 'combined-window',
         'history-pos': 1,
         'index': 0,
         'top': 0,
-        'top-left-pos': 0}})],
+        'top-left-pos': 2}})],
         'has-focus': False,
         'locked': False},
         [loc('../../../../../Program Files (x86)/Wing Personal 7.2/doc/TOC')]),
@@ -401,9 +407,9 @@ guimgr.overall-gui-state = {'windowing-policy': 'combined-window',
                  'tab_location': 'left',
                  'traversal_pos': ((0,
                                     0),
-                                   1677778397.929),
+                                   1677778475.241),
                  'user_data': {}},
-        'window-alloc': (20,
-                         0,
-                         1346,
-                         728)}]}
+        'window-alloc': (1,
+                         1,
+                         1278,
+                         678)}]}
