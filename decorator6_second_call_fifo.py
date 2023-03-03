@@ -4,6 +4,7 @@ remote_functions = {}     # "send_to_server" decorated functions
 function_fifo = []        # functions sent to server fifo
 
 def check_server_for_function():
+    # checks and executes saved functions
     global save_foo
     while function_fifo:
         item = function_fifo.pop(0)
