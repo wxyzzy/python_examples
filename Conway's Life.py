@@ -23,8 +23,8 @@ import tkinter.ttk as ttk
 from tkinter.messagebox import showinfo
 from functools import partial
 
-x_tiles, y_tiles = 20, 20
-x_size, y_size = 500 // 20, 500 // 20
+x_tiles, y_tiles = 25, 25
+x_size, y_size = 500 // 25, 500 // 25
 
 def main():
     root = tk.Tk()
@@ -69,9 +69,9 @@ def build_ui(root, board):
         return c
     
     def draw_board(cells):
-        for i in range(100):
-            for j in range(100):
-                coord = (i*x_size+1, j*y_size+1, i*x_size+x_size-3, j*y_size+y_size-3)
+        for i in range(x_tiles):
+            for j in range(y_tiles):
+                coord = (i*x_size+1, j*y_size+1, i*x_size+x_size-2, j*y_size+y_size-2)
                 fill = '#f00' if cells[i*x_tiles + j] == 1 else '#0f0'
                 canvas.create_rectangle(coord, fill=fill, outline=fill)
     
@@ -105,7 +105,22 @@ class GameBoardModel:
             index = col * x_tiles + row
             self._cells[index] = 1 - self._cells[index]
             self._game_state_callback(self._cells)
+        elif self._mode == 'run':
+            self.update_cells()
+            self._game_state_callback(self._cells)            
     
+    def update_cells(self):
+        c = [0] * (x_tiles * y_tiles)
+        for x in range(1, x_tiles-1):
+            for y in range(1, y_tiles-1):
+                index = y*x_tiles+x
+                v = self._cells[index]
+                s = sum([self._cells[index + (k//3-1)*x_tiles + k%3-1]
+                         for k in range(9) if k != 4])
+                c[index] = (1 if s==3 or s==2 and v==1 else 0)
+        self._cells = c
+        self._game_state_callback(self._cells)
+        
     def add_move_callback(self, callback):
         self._move_callbacks.append(callback)
 
