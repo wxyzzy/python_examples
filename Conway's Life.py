@@ -24,8 +24,8 @@ from tkinter.messagebox import showinfo
 from functools import partial
 
 x_tiles, y_tiles = 25, 25
-x_size, y_size = 500 // 25, 500 // 25
-
+x_size, y_size = 500 // x_tiles, 500 // y_tiles
+t0 = None
 def main():
     root = tk.Tk()
     board = GameBoardModel()
@@ -36,7 +36,14 @@ def main():
     root.geometry("500x550")
     root.mainloop()
 
-
+def elapse_time(text):
+    global t0
+    import time
+    t = round(time.time() * 1000)   
+    if t0:
+        print(text, t-t0)
+    t0 = t
+    
 def build_ui(root, board):
     def on_button_click(col, row, text):
         board.button_click(text)
@@ -48,10 +55,8 @@ def build_ui(root, board):
     def on_move(player, col, row):
         buttons[row * 3 + col].configure(text=player)
 
-    def on_game_state_change(winner):
-        showinfo(parent=root, title="Game over", message=f"Winner: {winner}")
-        for b in buttons: b.configure(text="")
-        board.reset()
+    def on_game_state_change(mode):
+        pass
 
     def create_button(col, row, text):
         b = ttk.Button(root, command=partial(on_button_click, col, row, text), text=text)
@@ -63,18 +68,32 @@ def build_ui(root, board):
         c = tk.Canvas(root, bg="white", height=500, width=500)
         c.grid(column=0, row=1, sticky='nw', columnspan=3)
         c.bind('<Button-1>', on_canvas_click)
-        for i in range(100):
+        draw_grid(c)
+        return c
+        
+    def draw_grid(c):
+        global line
+        for i in range(x_tiles):
             line=c.create_line(0, i*y_size, 500, i*y_size, fill='#aaa')
             line=c.create_line(i*x_size, 0, i*x_size, 500, fill='#aaa')
-        return c
     
     def draw_board(cells):
+        elapse_time('draw_board')
+        canvas.delete("all")
+        draw_grid(canvas)
         for i in range(x_tiles):
             for j in range(y_tiles):
                 coord = (i*x_size+1, j*y_size+1, i*x_size+x_size-2, j*y_size+y_size-2)
-                fill = '#f00' if cells[i*x_tiles + j] == 1 else '#0f0'
+                fill = '#f00' if cells[i*x_tiles + j] == 1 else '#fff'
                 canvas.create_rectangle(coord, fill=fill, outline=fill)
     
+    def periodic_service():
+        if board.mode =='run':
+            elapse_time('periodic_service')
+            board.update_cells()
+            elapse_time('after_update')
+            root.after(100, periodic_service)
+        
     buttons = []
     buttons.append(create_button(0, 0, 'demo'))
     buttons.append(create_button(1, 0, 'enter'))
@@ -86,28 +105,29 @@ def build_ui(root, board):
         root.rowconfigure(i, weight=1)
 
     board.add_game_state_callback(draw_board)
+    board.add_periodic_callback(periodic_service)
 
 
 class GameBoardModel:
     def __init__(self):
-        self._mode = None
+        self.mode = None
         self._game_state_callback = None
+        self._periodic_callback = None
         self._cells = [0] * (x_tiles * y_tiles)
 
     def reset(self):
         self._state = BoardState()
-
+        
     def button_click(self, text):
-        self._mode = text
+        self.mode = text
+        if self.mode == 'run':
+            self._periodic_callback()            
     
     def place_mark(self, col, row):
-        if self._mode == 'enter':
+        if self.mode == 'enter':
             index = col * x_tiles + row
             self._cells[index] = 1 - self._cells[index]
             self._game_state_callback(self._cells)
-        elif self._mode == 'run':
-            self.update_cells()
-            self._game_state_callback(self._cells)            
     
     def update_cells(self):
         c = [0] * (x_tiles * y_tiles)
@@ -126,6 +146,9 @@ class GameBoardModel:
 
     def add_game_state_callback(self, callback):
         self._game_state_callback = callback
+        
+    def add_periodic_callback(self, callback):
+        self._periodic_callback = callback
 
 
 if __name__ == "__main__":
