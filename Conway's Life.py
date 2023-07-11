@@ -28,7 +28,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.messagebox import showinfo
 from functools import partial
-import copy
+import copy, json, os
 
 time_test = False
 import time
@@ -133,11 +133,20 @@ class GameBoardModel:
         self._cells = [0] * (self.x_tiles * self.y_tiles)
 
     def reset(self):
+        if os.path.exists('conway.json'):
+            with open('conway.json', 'r') as f:
+                self._saved_cells = json.load(f)
         self._cells = self._saved_cells
         self._draw_board_callback(self._cells)
     
     def save_state(self):
+        total = sum(self._cells)
+        if total == 0:
+            return
         self._saved_cells = copy.deepcopy(self._cells)
+        with open('conway.json', 'w') as f:
+            js = json.dumps(self._saved_cells)
+            f.write(js)        
         
     def button_click(self, text):
         if self.mode == 'run' and text == 'run':
