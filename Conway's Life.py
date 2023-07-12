@@ -21,7 +21,7 @@ help_string = '''Using this demo
 Click on Enter to select or deselect cells.
 Click on Run to run the game of life.
 Click on Run again to stop the game.
-Click on Reset to reload the last state entered
+Click on Reset to reload the last pattern entered
 '''
 
 import tkinter as tk
@@ -130,7 +130,8 @@ class GameBoardModel:
         self.mode = None
         self._draw_callback = None
         self._periodic_callback = None
-        self._cells = [0] * (self.x_tiles * self.y_tiles)
+        self.cell_array_size = (self.x_tiles + 0) * (self.y_tiles + 0)
+        self._cells = [0] * (self.cell_array_size)
 
     def reset(self):
         if os.path.exists('conway.json'):
@@ -188,14 +189,19 @@ class GameBoardModel:
             self._draw_board_callback(self._cells)
     
     def update_cells(self):
-        c = [0] * (self.x_tiles * self.y_tiles)
-        for x in range(1, self.x_tiles - 1):
-            for y in range(1, self.y_tiles - 1):
-                index = y * self.x_tiles + x
-                v = self._cells[index]
-                s = sum([self._cells[index + (k//3-1) * self.x_tiles + (k%3-1)]
-                         for k in range(9) if k != 4])
-                c[index] = (1 if s==3 or s==2 and v==1 else 0)
+        n = self.cell_array_size
+        c = [0] * (self.cell_array_size)
+        try:
+            for x in range(0, self.x_tiles - 0):
+                for y in range(0, self.y_tiles - 0):
+                    index = y * self.x_tiles + x
+                    v = self._cells[index]
+                    s = sum([self._cells[(index + (k//3-1) * self.x_tiles + (k%3-1)) % n]
+                             for k in range(9) if k != 4])
+                    c[index] = (1 if s==3 or s==2 and v==1 else 0)
+        except Exception as e:
+            print(e)
+            raise(e)
         self._cells = c
         self._draw_board_callback(self._cells)
         
