@@ -29,6 +29,7 @@ import tkinter.ttk as ttk
 from tkinter.messagebox import showinfo
 from functools import partial
 import copy, json, os
+from list_window import ListWindow
 
 time_test = False
 import time
@@ -71,10 +72,10 @@ def build_ui(root, board):
         b.grid(column=col, row=row, sticky="nw")
         return b
     
-    def create_canvas():
+    def create_canvas(span):
         global line
         c = tk.Canvas(root, bg="white", height=500, width=500)
-        c.grid(column=0, row=1, sticky='nw', columnspan=4)
+        c.grid(column=0, row=1, sticky='nw', columnspan=span)
         c.bind('<Button-1>', on_canvas_click)
         draw_grid(c)
         return c
@@ -105,10 +106,11 @@ def build_ui(root, board):
         
     buttons = []
     buttons.append(create_button(0, 0, 'help'))
-    buttons.append(create_button(1, 0, 'enter'))
-    buttons.append(create_button(2, 0, 'run'))
-    buttons.append(create_button(3, 0, 'reset'))
-    canvas = create_canvas()
+    buttons.append(create_button(1, 0, 'demo'))
+    buttons.append(create_button(2, 0, 'enter'))
+    buttons.append(create_button(3, 0, 'run'))
+    buttons.append(create_button(4, 0, 'reset'))
+    canvas = create_canvas(5)
 
     for i in range(3):
         root.columnconfigure(i, weight=1)
@@ -133,12 +135,12 @@ class GameBoardModel:
         self.cell_array_size = (self.x_tiles + 0) * (self.y_tiles + 0)
         self._cells = [0] * (self.cell_array_size)
 
-    def reset(self):
-        if os.path.exists('conway.json'):
-            with open('conway.json', 'r') as f:
+    def reset(self, filename = 'conway.json'):
+        if os.path.exists(filename):
+            with open(filename, 'r') as f:
                 self._saved_cells = json.load(f)
-        self._cells = self._saved_cells
-        self._draw_board_callback(self._cells)
+                self._cells = self._saved_cells
+                self._draw_board_callback(self._cells)
     
     def save_state(self):
         total = sum(self._cells)
@@ -164,23 +166,21 @@ class GameBoardModel:
         elif self.mode == 'reset':
             self.reset()
     
-    def demo():
+    def demo(self):
         from pathlib import Path
+        from os import listdir
+        from os.path import isfile, join
+        path = Path('conway_demo')
+        
         def get_files():
-            from os import listdir
-            from os.path import isfile, join
-            path = Path('conway_demo')
             onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
             return onlyfiles
         
-        def get_file_name():
-            if not exists('conway_demo'):
-                path.mkdir('conway_demo')
-            fs = get_files()
-            filename = select_file(fs)
-            return filename
-        load_file(filename)
-        update_cells(self)
+        def load_file(name):
+            self.reset(join(path, name[0]))
+            
+        files = get_files()
+        ListWindow(files, "select demo", load_file)
     
     def place_mark(self, col, row):
         if self.mode == 'enter':
