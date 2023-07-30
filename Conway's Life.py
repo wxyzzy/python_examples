@@ -189,6 +189,7 @@ class GameBoardModel:
             self._draw_board_callback(self._cells)
     
     def update_cells(self):
+        from random import randint
         n = self.cell_array_size
         c = [0] * (self.cell_array_size)
         try:
@@ -199,6 +200,9 @@ class GameBoardModel:
                     s = sum([self._cells[(index + (k//3-1) * self.x_tiles + (k%3-1)) % n]
                              for k in range(9) if k != 4])
                     c[index] = (1 if s==3 or s==2 and v==1 else 0)
+                    # Add rule: 1% chance of birth if only one neighbor
+                    #c[index] = (1 if s==3 or s==2 and v==1 or 
+                    #            s==1 and randint(0,100)//100 else 0)
         except Exception as e:
             print(e)
             raise(e)
