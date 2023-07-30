@@ -70,7 +70,35 @@ def do_analysis(argv, i):
     elif n:
         def test(w):
             nonlocal allowed
-            if ap:
+            wordfeud = True
+            if ap and wordfeud:
+                # test various offsets between ap and w so as to include
+                # ap, less the required ap with stripped underscore
+                # plus the actual non _ characters
+                ap1 = ap.rstrip('_').lstrip('_')
+                ap2 = [ch for ch in ap1 if ch != '_']
+                len1 = len(ap1)
+                len2 = len(ap2)
+                max_offset = len(allowed) - len(ap1) + len(ap2)
+                for offset in range(max_offset):
+                    found = True
+                    for i, ch in enumerate(w):
+                        j = i - offset
+                        if j < 0 or j >= len1-1:
+                            if ch not in allowed:
+                                found = False
+                                break
+                        elif ap1[j] == '_':
+                            if ch not in allowed:
+                                found = False
+                                break
+                        elif ch != ap1[j]:
+                            found = False
+                            break
+                    if found:
+                        return True
+                return False
+            elif ap:
                 if len(w) != len(ap):
                     return False
                 for i, ch in enumerate(w):
@@ -134,7 +162,7 @@ def main(argv):
     n = len(argv)
     if n <= 1:
         # example from wordfeud where given pattern and allowed
-        argv = [argv[0]] + '-p _a___ -a wrranex -z'.split()
+        argv = [argv[0]] + '-p _a_i__ -a wrranex -z'.split()
     opts = parse_options(argv)
     action(argv, opts)
     
