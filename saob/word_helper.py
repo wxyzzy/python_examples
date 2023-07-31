@@ -3,7 +3,7 @@
 
 import sys, os, re
 
-data = None
+
 accept_pattern = ''   # gives accept letters and positions (ignore '_')
     # this implies length, as in wordfeud
 accept_letters = ''   # gives letters that may be used
@@ -11,6 +11,9 @@ accept_letters = ''   # gives letters that may be used
 exclude_letters = ''  # exclude letters
     # for example, if all letters may be used except these
 required_letters = '' # these letters are required
+wordfeud = False      # scan accept_pattern using wordfeud rule
+words = None
+
 
 help = '''
 parse [[options] file]
@@ -36,23 +39,25 @@ def do_init(argv, i):
 def get_word_list(word_length):
     with open('saob.txt', 'r', encoding='utf-8') as f:
         whole = f.read().replace('\r', '').split('\n')
-        s = r"^(?:[a-zåäö]{5})$".replace('5', str(word_length))
+        print(len(whole))
+        if word_length:
+            s = r"^([a-zåäö]{5})$".replace('5', str(word_length))
+        else:
+            s = r"^([a-zåäö]+)$"
         pat = re.compile(s)
         words = [w for w in whole if pat.match(w)]
     return words
 
 def do_get_words(argv, i):
-    # given word length, load data, load 5 if length is missing
+    # given word length, load words, load 5 if length is missing
+    global words
     n = get_field(argv, i)
-    n = 5 if n is None else n
     words = get_word_list(n)
     print('number of words: ', len(words))
-    global data
-    data = words
-
+    
 def do_analysis(argv, i):
     # type of analysis depends on global variables 
-    global accept_pattern, accept_letters, exclude_letters
+    global accept_pattern, accept_letters, exclude_letters, words
     ap, al, el = accept_pattern, accept_letters, exclude_letters
     rl = required_letters
     n = len(ap)
@@ -70,32 +75,40 @@ def do_analysis(argv, i):
     elif n:
         def test(w):
             nonlocal allowed
-            wordfeud = True
             if ap and wordfeud:
                 # test various offsets between ap and w so as to include
                 # ap, less the required ap with stripped underscore
                 # plus the actual non _ characters
+                if w == 'lillaxel':
+                    print(w)
                 ap1 = ap.rstrip('_').lstrip('_')
-                ap2 = [ch for ch in ap1 if ch != '_']
                 len1 = len(ap1)
-                len2 = len(ap2)
-                max_offset = len(allowed) - len(ap1) + len(ap2)
+                ap2 = [x for x in ap1 if x != '_']
+                max_offset = len(w) - len1
                 for offset in range(max_offset):
-                    found = True
-                    for i, ch in enumerate(w):
-                        j = i - offset
-                        if j < 0 or j >= len1-1:
-                            if ch not in allowed:
-                                found = False
-                                break
-                        elif ap1[j] == '_':
-                            if ch not in allowed:
-                                found = False
-                                break
-                        elif ch != ap1[j]:
-                            found = False
-                            break
-                    if found:
+                    # convolve ap1 over w
+                    oks = []   # collect ok results for each ap1 character
+                    allowed1 = allowed.copy()
+                    for i, apx in enumerate(ap1):
+                        ok = False
+                        if apx == '_':
+                            if w[i] in allowed1:
+                                ok = True
+                                # remove wordfeud tile
+                                k = allowed1.index(w[i])
+                                del allowed1[k]
+                        else:
+                            if apx == w[i+offset]:
+                                ok = True
+                        oks.append(ok)
+                    if min(oks) == True:
+                        allowed1 = allowed + ap2
+                        for ch in w:
+                            if ch in allowed1:
+                                k = allowed1.index(ch)
+                                del allowed1[k]
+                            else:
+                                return False
                         return True
                 return False
             elif ap:
@@ -113,10 +126,13 @@ def do_analysis(argv, i):
                     if ch not in w:
                         return False
             return True
-        words = get_word_list(n)
+        #words = get_word_list(n)
+        do_get_words(argv, i)
+        print('original words: ', len(words))
         words = [w for w in words if test(w)]
         n_found = len(words)
         print('words_found: ', n_found)
+        print(words)
         
         
 def do_accept_pattern(argv, i):
@@ -138,12 +154,16 @@ def do_required_letters(argv, i):
     x = get_field(argv, i)
     global required_letters
     required_letters = x
+
+def do_wordfeud(argv, i):
+    global wordfeud
+    wordfeud = True
     
 def action(argv, opts):
     # do something for various '-' options
     switch = {'h':do_help, 'i':do_get_words, 'p':do_accept_pattern,
               'a':do_accept_letters, 'e':do_exclude_letters, 
-              'r':do_required_letters, 'z':do_analysis}
+              'r':do_required_letters, 'w':do_wordfeud, 'z':do_analysis}
     for ch, i in opts:
         if ch in switch:
             switch[ch](argv, i)
@@ -162,7 +182,7 @@ def main(argv):
     n = len(argv)
     if n <= 1:
         # example from wordfeud where given pattern and allowed
-        argv = [argv[0]] + '-p _a_i__ -a wrranex -z'.split()
+        argv = [argv[0]] + '-w -p lla -a slixel -z'.split()
     opts = parse_options(argv)
     action(argv, opts)
     
