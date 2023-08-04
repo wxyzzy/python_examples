@@ -13,3 +13,4 @@ __pycache__/
 cherrypy/cherrypy/
 pickle.pckl
 python_examples.wpr
+*.wpr
