@@ -17,8 +17,14 @@ words = None
 
 help = '''
 parse [[options] file]
-options:
-    i - load n letter words or 5 letter if n is missing
+options (preceded by '-' character):
+    a - enter accept letters that are allowed
+    i - load n letter words where n follows the option
+    e - enter exclude letters such as in wordel game
+    p - enter accept pattern (including _ for wildcard)
+    r - enter required letters such as in wordel game
+    w - force wordfeud rules on pattern matching (relaxed)
+    z - do analysis producing a list of words
 
 This set of scripts starts with (soal.txt) word list.
 Option -i removes words that are not used in.
@@ -53,7 +59,6 @@ def do_get_words(argv, i):
     global words
     n = get_field(argv, i)
     words = get_word_list(n)
-    print('number of words: ', len(words))
     
 def do_analysis(argv, i):
     # type of analysis depends on global variables 
@@ -64,7 +69,7 @@ def do_analysis(argv, i):
     allowed = [chr(x) for x in range(ord('a'), ord('z') + 1)]
     allowed += [x for x in 'åäö']
     allowed = al if al else allowed
-    allowed = [x for x in allowed if x != (el if el else '')]
+    allowed = [x for x in allowed if x not in (el if el else '')]
     if ap == al == el == '':
         # summarize number of words of various lengths
         print('word_len\tn_found\texample')
@@ -79,7 +84,7 @@ def do_analysis(argv, i):
                 # test various offsets between ap and w so as to include
                 # ap, less the required ap with stripped underscore
                 # plus the actual non _ characters
-                if w == 'lillaxel':
+                if w == 'henne':
                     print(w)
                 ap1 = ap.rstrip('_').lstrip('_')
                 len1 = len(ap1)
@@ -112,8 +117,11 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
+                if w == 'henne':
+                    print('henne')
                 if len(w) != len(ap):
                     return False
+                allowed1 = set(allowed) - set(exclude_letters)
                 for i, ch in enumerate(w):
                     if not (ap[i] == '_' and ch in allowed or ap[i] == ch):
                         return False
@@ -181,8 +189,11 @@ def main(argv):
     # parse for '-' options
     n = len(argv)
     if n <= 1:
-        # example from wordfeud where given pattern and allowed
-        argv = [argv[0]] + '-w -p lla -a slixel -z'.split()
+        # example from wordfeud where given pattern and allowed char is used
+        params = '-w -p lla -a slixel -z'
+        # example from wordel where word length is 5'
+        params = '-i 5 -p h____ -a en -e gåvasätbildomök -z'
+        argv = [argv[0]] + params.split()
     opts = parse_options(argv)
     action(argv, opts)
     
