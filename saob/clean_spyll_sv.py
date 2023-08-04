@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # convert sv_SE.dic to spyll.txt (dictionary)
 
 from pprint import pprint
@@ -23,11 +24,55 @@ def convert_to_dict():
 
 aff = None
 
-def analyze_word(d, code):
-    # parse word against aff file
-    code1 = code.split(' ')
-    d.update({'code': code1})
-    return d
+def make_definite(w, code):
+    # form definite tense
+    definite = w
+    key = code[0]
+    if 'C' in key:
+        if w[-1] in 'aeiouyåäöé':
+            definite = w + 't'
+        elif w[-2:] == 'el':
+            definite = w + 'let'
+        elif w[-2:] == 'er':
+            definite = w + 'ret'
+        elif w[-1:] == 'm':
+            definite = w + 'met'
+        elif w[-2:] == 'en':
+            definite = w + 'net'
+        elif w[-1:] == 'n':
+            definite = w + 'net'
+    elif 'D' in key:
+        if w[-1:] == 'a':
+            definite = w + 'nde'
+        else:
+            definite = w + 'en'
+    elif 'E' in key:
+        if w[-2:] == 'um':
+            definite = w + 'a'
+        else:
+            definite = w + 'n'
+    elif 'F' in key:
+        if w[-2:] == 'er':
+            definite = w + 'ren'
+        if w[-2:] == 'el':
+            definite = w + 'len'
+        if w[-2:] == 'en':
+            definite = w + 'nen'
+        if w[-1:] == 'n':
+            definite = w + 'nen'
+        if w[-1:] == 'm':
+            definite = w + 'men'
+        if w[-1:] == 'a':
+            definite = w + 'ndena'
+        if w[-1:] in 'eioä':
+            definite = w + 'na'
+        else:
+            definite = None
+    else:
+        definite = None
+    if definite:
+        print(f'{w}\t{definite}')        
+    return definite
     
 def make_definite_dict():
     global aff
@@ -49,13 +94,16 @@ def make_definite_dict():
             w = s[0]
             code = s[1]
             d = {'word': w}
-            d = analyze_word(d, code)
-            code1 = code.split()
-            key = code1[0]
-            isnown = [ch for ch in key if ch in 'BDEHY']
-            if any(isnown):
+            code = code.split(' ')
+            d.update({'code': code})
+            key = code[0]
+            can_definite_form  = [ch for ch in key if ch in 'CDEF']
+            # JKLMNOPQR - verb or adjective
+            if any(can_definite_form):
                 d.update({'part': 'nown'})
-            pprint(d)
+                definite = make_definite(w, code)
+                if definite:
+                    d.update({'definite': definite})
 
 if __name__ == "__main__":
     if False:
