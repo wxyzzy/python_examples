@@ -71,10 +71,11 @@ def make_definite(w, code):
     else:
         definite = None
     if definite:
-        print(f'{w}\t{definite}')        
+        #print(f'{w}\t{definite}')
+        pass
     return definite
     
-def make_definite_dict():
+def make_definite_list(include_all_words = False):
     global aff
     with open('sv_SE.dic', 'r', encoding='utf-8') as f:
         d = f.read()
@@ -85,6 +86,8 @@ def make_definite_dict():
     for word in d1:
         s = word.split('/')
         w = s[0]
+        if w == 'henne':
+            print(w)
         if any([str(i) in w for i in range(10)]):
             continue
         if any([x in w for x in '-:.,/!']):
@@ -104,13 +107,17 @@ def make_definite_dict():
                 definite = make_definite(w, code)
                 if definite:
                     d.update({'definite': definite})
+                    out.append((w, definite))
+                elif include_all_words:
+                    out.append((w, None))
+            elif include_all_words:
+                out.append((w, None))
+    return out
 
 if __name__ == "__main__":
-    if False:
-        out = convert_to_dict()
-        d1 = '\n'.join(out)
-        with open('sv_SE.txt', 'w', encoding='utf-8') as fout:
-            fout.write(d1)
-    make_definite_dict()    
+    out = make_definite_list(True)
+    out1 = '\n'.join([w + '\n' + d if d else w for w, d in out])
+    with open('sv_SE.txt', 'w', encoding='utf-8') as fout:
+        fout.write(out1) 
     print('done')
     
