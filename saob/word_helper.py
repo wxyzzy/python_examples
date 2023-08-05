@@ -123,8 +123,8 @@ def do_analysis(argv, i):
                     print('henne')
                 if len(w) != len(ap):
                     return False
-                for ch in allowed:
-                    if ch not in w:
+                for ch in w:
+                    if ch not in allowed:
                         return False
                 for i, ch in enumerate(w):
                     if ap[i] != '_' and ap[i] != ch:
@@ -198,7 +198,7 @@ def main(argv):
         # example from wordfeud where given pattern and allowed char is used
         params = '-w -p lla -a slixel -z'
         # example from wordel where word length is 5'
-        params = '-i 5 -p gr___ -a rg -e husenabotdväil -z'
+        params = '-i 5 -p __den -e ralgujo -z'
         argv = [argv[0]] + params.split()
     opts = parse_options(argv)
     action(argv, opts)
