@@ -45,6 +45,7 @@ def do_init(argv, i):
 def get_word_list(word_length):
     #filename = 'saob.txt'
     filename = 'sv_SE.txt'
+    filename = 'sv_SE2.txt'
     with open(filename, 'r', encoding='utf-8') as f:
         whole = f.read().replace('\r', '').split('\n')
         print(len(whole))
@@ -131,6 +132,9 @@ def do_analysis(argv, i):
                         return False
                     if ch in exclude_letters:
                         return False
+                for ch in rl:
+                    if ch not in w:
+                        return False
             else:
                 for ch in w:
                     if ch not in allowed:
@@ -198,7 +202,7 @@ def main(argv):
         # example from wordfeud where given pattern and allowed char is used
         params = '-w -p lla -a slixel -z'
         # example from wordel where word length is 5'
-        params = '-i 5 -p __den -e ralgujo -z'
+        params = '-i 5 -p _ju_a -r d -e rben -z'
         argv = [argv[0]] + params.split()
     opts = parse_options(argv)
     action(argv, opts)
