@@ -44,7 +44,7 @@ def do_init(argv, i):
 
 def get_word_list(word_length):
     #filename = 'saob.txt'
-    filename = 'sv_SE.txt'
+    #filename = 'sv_SE.txt'
     filename = 'sv_SE2.txt'
     with open(filename, 'r', encoding='utf-8') as f:
         whole = f.read().replace('\r', '').split('\n')
@@ -58,7 +58,7 @@ def get_word_list(word_length):
     return words
 
 def do_get_words(argv, i):
-    # given word length, load words, load 5 if length is missing
+    # given word length, load words
     global words
     n = get_field(argv, i)
     words = get_word_list(n)
@@ -120,8 +120,8 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
-                if w == 'henne':
-                    print('henne')
+                if w == 'garva':
+                    print(w)
                 if len(w) != len(ap):
                     return False
                 for ch in w:
@@ -202,7 +202,7 @@ def main(argv):
         # example from wordfeud where given pattern and allowed char is used
         params = '-w -p lla -a slixel -z'
         # example from wordel where word length is 5'
-        params = '-i 5 -p _ju_a -r d -e rben -z'
+        params = '-i 5 -p ga_ar -e debnj -z'
         argv = [argv[0]] + params.split()
     opts = parse_options(argv)
     action(argv, opts)

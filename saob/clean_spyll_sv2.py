@@ -11,7 +11,7 @@ sfxs = None
 
 def conjugate_word(w, code):
     conj = []
-    if w[:5] == 'djupa':
+    if w[:5] == 'garva':
         print(w)
     for c in code:
         if c in sfxs:
@@ -29,18 +29,20 @@ def conjugate_word(w, code):
                                 continue
                         else:
                             accept = inside
+                    elif info == '.':
+                        accept = ''  # not sure what '.' means
                     else:
                         accept = info
                     if accept == '':
                         if ending == '0':
                             conj.append(w + replace)
                         elif ending == w[-len(ending):]:
-                             conj.append(w[:-len(ending)] + replace)
+                            conj.append(w[:-len(ending)] + replace)
                     elif w[-len(accept):] == accept:
                         if ending == '0':
                             conj.append(w + replace)
                         elif ending == w[-len(ending):]:
-                             conj.append(w[:-len(ending)] + replace)
+                            conj.append(w[:-len(ending)] + replace)
     return conj
     
 def make_word_list():
@@ -55,7 +57,7 @@ def make_word_list():
     sfxs = [x.replace('  ', ' ').split(' ') for x in aff if x[:3] == 'SFX']
     sfxs = [(x + [' '])[:5] for x in sfxs]
     d = {}
-    for kod in 'CDEFGHI':
+    for kod in 'ACDEFGHImNP':
         value = [x for x in sfxs if x[1] == kod]
         d.update({kod: value})
     sfxs = d
@@ -70,7 +72,7 @@ def make_word_list():
             continue
         w = s[0]
         out.append(w)
-        if False and w[:4] == 'afro':
+        if w[:4] == 'gasa':
             print(w)        if len(s) >= 2:
             code = s[1]
             code = code.split(' ')[0]
