@@ -17,13 +17,14 @@ words = None
 
 help = '''
 parse [[options] file]
+where [options] = [option extra_word]
 options (preceded by '-' character):
-    a - enter accept letters that are allowed
-    i - load n letter words where n follows the option
-    e - enter exclude letters such as in wordel game
+    i - limit dictionary to n letter words
+    a - enter accept letters that are allowed (wordfeud)
+    r - enter required letters (wordel)
+    e - enter exclude letters (wordel)
     p - enter accept pattern (including _ for wildcard)
-    r - enter required letters such as in wordel game
-    w - force wordfeud rules on pattern matching (relaxed)
+    w - force wordfeud rules on pattern matching (not wordel)
     z - do analysis producing a list of words
 
 This set of scripts starts with (soal.txt) word list.
@@ -149,8 +150,7 @@ def do_analysis(argv, i):
         print('original words: ', len(words))
         words = [w for w in words if test(w)]
         n_found = len(words)
-        print('words_found: ', n_found)
-        print(words)
+        return n_found, words
         
         
 def do_accept_pattern(argv, i):
@@ -184,7 +184,9 @@ def action(argv, opts):
               'r':do_required_letters, 'w':do_wordfeud, 'z':do_analysis}
     for ch, i in opts:
         if ch in switch:
-            switch[ch](argv, i)
+            result = switch[ch](argv, i)
+            if ch == 'z':
+                return result
             
 def parse_options(argv):
     # option and position i is saved in opts
@@ -195,6 +197,14 @@ def parse_options(argv):
             opts.extend([(ch, i) for ch in arg[1:]])
     return opts
 
+def call(argv):
+    # this is the entry point for main programs that call this module
+    # argv is a list containing the name of the program, followed by parameters
+    # the result is a tuple containing length and word list
+    opts = parse_options(argv)
+    result = action(argv, opts)
+    return result
+
 def main(argv):
     # parse for '-' options
     n = len(argv)
@@ -202,10 +212,13 @@ def main(argv):
         # example from wordfeud where given pattern and allowed char is used
         params = '-w -p lla -a slixel -z'
         # example from wordel where word length is 5'
-        params = '-i 5 -p ga_ar -e debnj -z'
+        params = '-i 5 -p __ta_ -r u -e prisbn -z'
         argv = [argv[0]] + params.split()
     opts = parse_options(argv)
-    action(argv, opts)
+    result = action(argv, opts)
+    if type(result) == tuple and len(result) == 2:
+        print('words_found: ', result[0])
+        print(result[1])    
     
 if __name__ == "__main__":
     main(sys.argv)
