@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-# convert sv_SE.dic and sv_SE.aff to spyll2.txt (dictionary)
-# analyses SFX and PFX codes from sv_SE.aff
+# convert sv_SE.dic and sv_SE.aff to sv_SV.txt (dictionary)
+# analyses SFX and codes from sv_SE.aff
+# finds words used in ordel.se and ordel app
+# has not been tested against wordfeud app
 
 
 from pprint import pprint
