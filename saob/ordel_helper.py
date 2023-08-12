@@ -78,24 +78,30 @@ def main():
     window.mainloop()
 
 def color_selection(index):
-    global lbl, label_color
+    global lbl, label_color, row_index, char_index
     b = lbl[index]
     if label_color[index] == undefined_color: label_color[index] = exclude_color
     elif label_color[index] == exclude_color: label_color[index] = required_color
     elif label_color[index] == required_color: label_color[index] = pattern_color
     elif label_color[index] == pattern_color: label_color[index] = undefined_color
     b.config(bg = label_color[index])
+    
+    # select row and column
+    row_index = index // 5
+    char_index = index % 5    
     return
 
 def play():
+    global row_index
     # collect information
     # for now, assume first row only
     pattern = ''
     required = ''
     excluded = ''
-    for i in range(5):
+    for i in range(row_index * 5, row_index * 5 + 5):
         pattern += label_char[i] if label_color[i] == pattern_color else '_'
         required += label_char[i] if label_color[i] == required_color else ''
+    for i in range(row_index * 5 + 5):
         excluded += label_char[i] if label_color[i] == exclude_color else ''
     
     # compose query
@@ -113,7 +119,9 @@ def play():
 
 def use_char(ch):
     global char_index, row_index, lbl
-    if (char_index < 5 and row_index < 6 and
+    if ch == '\r':
+        play()
+    elif (char_index < 5 and row_index < 6 and
         ch in 'qwertyuiopåasdfghjklöäzxcvbnm'):
         index = char_index + row_index * 5
         lbl[index].config(text=ch)
@@ -128,6 +136,8 @@ def use_char(ch):
 def key(event):
     if event.char == event.keysym:
         msg = 'Normal Key %r' % event.char
+        ch = event.char
+    elif event.char in 'åäö\r':
         ch = event.char
     elif len(event.char) == 1:
         msg = 'Punctuation Key %r (%r)' % (event.keysym, event.char)
