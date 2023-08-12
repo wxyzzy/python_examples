@@ -4,6 +4,8 @@
 
 import tkinter as tk
 import word_helper as wh
+from functools import partial
+
 
 # In frame1 the current row and char index is:
 char_index = 0
@@ -19,7 +21,7 @@ def main():
     global lbl, n_label, word_label
     window = tk.Tk()
     window.title("ordel helper")
-    window.geometry("820x400")
+    window.geometry("820x450")
     window.configure(bg='#555')
     
     # selection, 5 characters by 6 attempts
@@ -29,8 +31,9 @@ def main():
     for i in range(6):
         for j in range(5):
             index = j + i * 5
-            a = (tk.Label(frame1, bg='#000', fg='#ffa', width=4, height=2, padx=0, pady=0, 
-                          font=('calibre', 12, 'bold'), justify=tk.CENTER))
+            foo = partial(color_selection, index)
+            a = (tk.Button(frame1, bg='#333', fg='#ffa', width=4, height=2, padx=0, pady=0, 
+                          font=('calibre', 12, 'bold'), justify=tk.CENTER, command=foo))
             a.grid(row=i, column=j, padx=2, pady=2)
             lbl.append(a)
     
@@ -48,7 +51,7 @@ def main():
                 a.grid(row=i, column=j, padx=2, pady=2)
                 #lbl.append(a)
 
-    btn = tk.Button(window, text="Spela", command=play)
+    btn = tk.Button(window, text="Spela", bg='#333', fg='#ffa', command=play)
     btn.grid(row=2, column=1)
     
     # hint
@@ -63,6 +66,12 @@ def main():
     window.bind_all('<Key>', key)
     window.mainloop()
 
+def color_selection(index):
+    global lbl
+    b = lbl[index]
+    b.config(bg = '#088')
+    return
+
 def play():
     # compose query
     # 'ordel -i 5 -p __ta_ -r u -e ee -z
@@ -72,7 +81,7 @@ def play():
     
     # send query
     n, lst = wh.call(query.split()) 
-    s = ', '.join(lst[:20])
+    s = ',  '.join(lst[:20])
     n_label.config(text=str(n))
     word_label.config(text=f'[{s}]')
     return
