@@ -58,6 +58,13 @@ def get_word_list(word_length):
         words = [w for w in whole if pat.match(w)]
     return words
 
+def get_random_word(word_length):
+    import random
+    words = get_word_list(word_length)
+    n = len(words)
+    i = random.randint(0, n)
+    return words[i]
+    
 def do_get_words(argv, i):
     # given word length, load words
     global words
@@ -212,7 +219,7 @@ def main(argv):
         # example from wordfeud where given pattern and allowed char is used
         params = '-w -p lla -a slixel -z'
         # example from wordel where word length is 5'
-        params = '-i 5 -p __ta_ -r u -e prisbn -z'
+        params = '-i 5 -p __dan -e rolåme -z'
         argv = [argv[0]] + params.split()
     opts = parse_options(argv)
     result = action(argv, opts)
