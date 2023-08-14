@@ -124,7 +124,7 @@ def enter_word_cb(d):
     print(target)
     
 def play():
-    global row_index, label_char, label_color, target
+    global row_index, char_index, label_char, label_color, target
     
     # process target word if defined
     if target:
@@ -166,6 +166,7 @@ def play():
     # increment row
     if row_index < 6:
         row_index += 1
+        char_index = 0
     return
 
 def use_char(ch):
