@@ -26,14 +26,16 @@ required = ''
 excluded = ''
 n_label = None
 word_label = None
+scale = None
+text = None
 key_focus = True
 target = ''
 
 def main():
-    global lbl, n_label, word_label
+    global lbl, n_label, word_label, scale, text
     window = tk.Tk()
     window.title("ordel helper")
-    window.geometry("820x480")
+    window.geometry("820x600")
     window.configure(bg='#555')
     
     # selection, 5 characters by 6 attempts
@@ -83,8 +85,21 @@ def main():
     n_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text, justify=tk.CENTER)
     n_label.grid(row=1, column=0, padx=2, pady=2, sticky=tk.W)
     text = '[]'
-    word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text, justify=tk.CENTER)
-    word_label.grid(row=2, column=0, padx=2, pady=2, sticky=tk.W)
+    #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text, justify=tk.CENTER)
+    #word_label.grid(row=2, column=0, padx=2, pady=2, sticky=tk.W)
+    
+    # scroll text within word_label
+    word_label = tk.Text(frame4, bg=undefined_color, pady=2, fg='#ffa', width=100, height=5)
+    word_label.grid(row=2, column=0)
+    scale = tk.Scrollbar(frame4, bg=undefined_color, bd=0, 
+                     orient=tk.HORIZONTAL, command=word_label.yview)
+    scale.grid(row=3, column=0, sticky=tk.NSEW)
+    word_label.config(yscrollcommand=scale.set)
+    array = 'This is a very long line. This is a very long line. This is a very long line.\n'
+    array += ' This is a very long line. This is a very long line. This is a very long line.\n'
+    array += '  This is a very long line. This is a very long line. This is a very long line. '
+    word_label.insert(tk.END, array)
+    
     window.bind_all('<Key>', key)
     window.mainloop()
 
@@ -122,7 +137,11 @@ def enter_word_cb(d):
     values = list(d.values())
     target = values[0]
     print(target)
-    
+
+def do_scale(event):
+    index = scale.get()
+    word_label.config()
+
 def play():
     global row_index, char_index, label_char, label_color, target
     
@@ -158,10 +177,18 @@ def play():
     query = (f'ordel -i 5 -p {pattern} {r} {e} -z')
     
     # send query
-    n, lst = wh.call(query.split()) 
-    s = ',  '.join(lst[:20])
+    n, lst = wh.call(query.split())
+    s = ''
+    for i, w in enumerate(lst):
+        s += w
+        if i % 12 == 0:
+            s += '\n'
+        else:
+            s += ', '
     n_label.config(text=str(n))
-    word_label.config(text=f'[{s}]')
+    array = f'[{s}]'
+    word_label.delete("1.0", tk.END)
+    word_label.insert("1.0", array)
     
     # increment row
     if row_index < 6:
