@@ -35,7 +35,7 @@ def main():
     global lbl, n_label, word_label, scale, text
     window = tk.Tk()
     window.title("ordel helper")
-    window.geometry("820x600")
+    window.geometry("820x550")
     window.configure(bg='#555')
     
     # selection, 5 characters by 6 attempts
@@ -181,7 +181,7 @@ def play():
     s = ''
     for i, w in enumerate(lst):
         s += w
-        if i % 12 == 0:
+        if i % 14 == 13:
             s += '\n'
         else:
             s += ', '
