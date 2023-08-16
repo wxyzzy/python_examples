@@ -129,6 +129,8 @@ def do_restart():
     label_char = ['' for x in label_color]
     for l in lbl:
         l.config(bg=undefined_color, text='')
+    for k in keyboard:
+        k.config(bg=undefined_color)
     pattern = '_____'
     required = ''
     excluded = ''
