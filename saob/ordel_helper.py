@@ -17,6 +17,8 @@ row_index = 0
 lbl = []
 label_color = []
 label_char = []
+keyboard = []
+keys = 'qwertyuiopåasdfghjklöäzxcvbnm'
 undefined_color = '#333'
 exclude_color = '#000'
 required_color = '#088'
@@ -32,7 +34,7 @@ key_focus = True
 target = ''
 
 def main():
-    global lbl, n_label, word_label, scale, text
+    global lbl, keyboard, keys, n_label, word_label, scale, text
     window = tk.Tk()
     window.title("ordel helper")
     window.geometry("820x550")
@@ -60,13 +62,12 @@ def main():
     for i in range(3):
         for j in range(11):
             index = j + i * 11
-            keys = 'qwertyuiopåasdfghjklöäzxcvbnm'
             if index < len(keys):
                 ch = keys[index]
                 a = (tk.Label(frame2, bg=undefined_color, fg='#ffa', width=4, height=2, padx=0, pady=0,
                               font=('calibre', 12, 'bold'), text=ch, justify=tk.CENTER, relief=tk.RAISED))
                 a.grid(row=i, column=j, padx=2, pady=2)
-                #lbl.append(a)
+                keyboard.append(a)
     
     # actions
     frame3 = tk.Frame(window, height=100, width=450, bg="#555")
@@ -161,7 +162,7 @@ def do_scale(event):
 
 def play():
     global row_index, char_index, label_char, label_color, target
-    
+    global keys, keyboard
     # process target word if defined
     if target:
         word = label_char[row_index * 5: row_index * 5 + 5]
@@ -206,6 +207,14 @@ def play():
     array = f'[{s}]'
     word_label.delete("1.0", tk.END)
     word_label.insert("1.0", array)
+    
+    # modify keyboard colors
+    for i in range(row_index * 5, row_index * 5 + 5):
+        ch = label_char[i]
+        color = label_color[i]
+        if ch in keys:
+            index = keys.find(ch)
+            keyboard[index].config(bg = color)
     
     # increment row
     if row_index < 6:
