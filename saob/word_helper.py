@@ -140,17 +140,21 @@ def do_analysis(argv, i):
                         return False
                     if ch in exclude_letters:
                         return False
-                for ch in rl:
-                    if ch not in w:
+                for i, ch in enumerate(rl):
+                    if ch != '_' and ch not in w:
+                        return False
+                    # rl shows where a pattern of where required letters are; 
+                    # the letter does not belong in this position
+                    if '_' in rl and ch != '_' and ch == w[i]:
                         return False
             else:
                 for ch in w:
                     if ch not in allowed:
                         return False
-            if rl:
-                for ch in rl:
-                    if ch not in w:
-                        return False
+                if rl:
+                    for ch in rl:
+                        if ch not in w:
+                            return False
             return True
         #words = get_word_list(n)
         do_get_words(argv, i)

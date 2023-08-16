@@ -122,6 +122,7 @@ def do_random_word():
     ok = messagebox.askokcancel('Random word', 'Select random word from dictionary')
     if ok:
         target = wh.get_random_word(5)
+        print(target)
     return
 
 def do_enter_word():
@@ -166,7 +167,7 @@ def play():
     excluded = ''
     for i in range(row_index * 5, row_index * 5 + 5):
         pattern += label_char[i] if label_color[i] == pattern_color else '_'
-        required += label_char[i] if label_color[i] == required_color else ''
+        required += label_char[i] if label_color[i] == required_color else '_'
     for i in range(row_index * 5 + 5):
         excluded += label_char[i] if label_color[i] == exclude_color else ''
     
