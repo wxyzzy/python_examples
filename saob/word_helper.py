@@ -75,7 +75,7 @@ def do_analysis(argv, i):
     # type of analysis depends on global variables 
     global accept_pattern, accept_letters, exclude_letters, words
     ap, al, el = accept_pattern, accept_letters, exclude_letters
-    rl = required_letters
+    rl = required_letters.split(',')
     n = len(ap)
     allowed = [chr(x) for x in range(ord('a'), ord('z') + 1)]
     allowed += [x for x in 'åäö']
@@ -140,19 +140,20 @@ def do_analysis(argv, i):
                         return False
                     if ch in exclude_letters:
                         return False
-                for i, ch in enumerate(rl):
-                    if ch != '_' and ch not in w:
-                        return False
-                    # rl shows where a pattern of where required letters are; 
-                    # the letter does not belong in this position
-                    if '_' in rl and ch != '_' and ch == w[i]:
-                        return False
+                for r in rl:
+                    for i, ch in enumerate(r):
+                        if ch != '_' and ch not in w:
+                            return False
+                        # rl shows a pattern of where required letters are; 
+                        # the letter does not belong in this position
+                        if '_' in r and ch != '_' and ch == w[i]:
+                            return False
             else:
                 for ch in w:
                     if ch not in allowed:
                         return False
-                if rl:
-                    for ch in rl:
+                for r in rl:
+                    for ch in r:
                         if ch not in w:
                             return False
             return True

@@ -184,9 +184,14 @@ def play():
     excluded = ''
     for i in range(row_index * 5, row_index * 5 + 5):
         pattern += label_char[i] if label_color[i] == pattern_color else '_'
-        required += label_char[i] if label_color[i] == required_color else '_'
-    for i in range(row_index * 5 + 5):
-        excluded += label_char[i] if label_color[i] == exclude_color else ''
+    for i in range(row_index + 1):
+        # 'required' can look like '____r,__r__' to show where r cannot be
+        if i != 0:
+            required += ','
+        for j in range(5):
+            k = i * 5 + j
+            excluded += label_char[k] if label_color[k] == exclude_color else ''
+            required += label_char[k] if label_color[k] == required_color else '_'
     
     # compose query
     # 'ordel -i 5 -p __ta_ -r u -e ee -z
