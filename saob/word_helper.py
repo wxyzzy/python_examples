@@ -160,6 +160,8 @@ def do_analysis(argv, i):
         do_get_words(argv, i)
         print('original words: ', len(words))
         words = [w for w in words if test(w)]
+        words = list(set(words))
+        words.sort()
         n_found = len(words)
         return n_found, words
         

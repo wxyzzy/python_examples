@@ -71,12 +71,14 @@ def main():
     # actions
     frame3 = tk.Frame(window, height=100, width=450, bg="#555")
     frame3.grid(row=2, column=1, padx=4, pady=4)
+    btn = tk.Button(frame3, text="Restart", bg=undefined_color, fg='#ffa', command=do_restart)
+    btn.grid(row=1, column=1, padx=2)
     btn = tk.Button(frame3, text="Random", bg=undefined_color, fg='#ffa', command=do_random_word)
-    btn.grid(row=1, column=1)
+    btn.grid(row=1, column=2, padx=2)
     btn = tk.Button(frame3, text="Enter", bg=undefined_color, fg='#ffa', command=do_enter_word)
-    btn.grid(row=1, column=2)
+    btn.grid(row=1, column=3, padx=2)
     btn = tk.Button(frame3, text="Spela", bg=undefined_color, fg='#ffa', command=play)
-    btn.grid(row=1, column=3)
+    btn.grid(row=1, column=4, padx=2)
     
     # hint
     frame4 = tk.Frame(window, height=100, width=450, bg="#555")
@@ -117,6 +119,20 @@ def color_selection(index):
     char_index = index % 5
     return
 
+def do_restart():
+    global char_index, row_index, lbl, label_color, label_char
+    global pattern, required, excluded, target
+    char_index = 0
+    row_index = 0
+    label_color = [undefined_color for x in label_color]
+    label_char = ['' for x in label_color]
+    for l in lbl:
+        l.config(bg=undefined_color, text='')
+    pattern = '_____'
+    required = ''
+    excluded = ''
+    target = ''
+    
 def do_random_word():
     global target
     ok = messagebox.askokcancel('Random word', 'Select random word from dictionary')
