@@ -4,7 +4,7 @@
 # https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 # James Nash
 # built on framework from Henrik Tunedal
-# Copyright 2023 Henrik Tunedal. Licensed under the MIT license.
+# Copyright 2023 James Nash, Henrik Tunedal. Licensed under the MIT license.
 #
 # Points of interest (from HT's framework):
 #

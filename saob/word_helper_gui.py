@@ -1,5 +1,5 @@
 # ordel helper
-#
+# Copyright 2023 James Nash. Licensed under the MIT license.
 
 
 import tkinter as tk
@@ -98,9 +98,9 @@ def main():
                      orient=tk.HORIZONTAL, command=word_label.yview)
     scale.grid(row=3, column=0, sticky=tk.NSEW)
     word_label.config(yscrollcommand=scale.set)
-    array = 'This is a very long line. This is a very long line. This is a very long line.\n'
-    array += ' This is a very long line. This is a very long line. This is a very long line.\n'
-    array += '  This is a very long line. This is a very long line. This is a very long line. '
+    array = 'Ordel Helper (Swedish) may be used beside Ordel.se or Ordel app to help find valid words. \n'
+    array += 'Enter the same word used in Ordel.se, click on each letter to change its color, and click on "Play".\n'
+    array += 'Or click on "Random" or "Enter" to create a target word and play Ordel Helper by itself.'
     word_label.insert(tk.END, array)
     
     window.bind_all('<Key>', key)

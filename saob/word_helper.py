@@ -21,14 +21,15 @@ where [options] = [option extra_word]
 options (preceded by '-' character):
     i - limit dictionary to n letter words
     a - enter accept letters that are allowed (wordfeud)
-    r - enter required letters (wordel)
+    r - enter required letters (wordel), can be a pattern like __r__
     e - enter exclude letters (wordel)
     p - enter accept pattern (including _ for wildcard)
     w - force wordfeud rules on pattern matching (not wordel)
     z - do analysis producing a list of words
 
 This set of scripts starts with (soal.txt) word list.
-Option -i removes words that are not used in.
+Option -r may have multiple patterns such as __r__,r___a.
+   This removes words with r if in position 0, 2 and a if in position 4
 '''
 
 def do_help(argv, i): print(help)
@@ -95,7 +96,7 @@ def do_analysis(argv, i):
                 # test various offsets between ap and w so as to include
                 # ap, less the required ap with stripped underscore
                 # plus the actual non _ characters
-                if w == 'henne':
+                if False and w == 'henne':
                     print(w)
                 ap1 = ap.rstrip('_').lstrip('_')
                 len1 = len(ap1)
@@ -128,7 +129,7 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
-                if w == 'garva':
+                if False and w == 'garva':
                     print(w)
                 if len(w) != len(ap):
                     return False
