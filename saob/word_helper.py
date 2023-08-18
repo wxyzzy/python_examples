@@ -129,7 +129,7 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
-                if False and w == 'garva':
+                if True and w == 'ankan':
                     print(w)
                 if len(w) != len(ap):
                     return False

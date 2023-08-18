@@ -195,6 +195,11 @@ def play():
             excluded += label_char[k] if label_color[k] == exclude_color else ''
             required += label_char[k] if label_color[k] == required_color else '_'
     
+    # remove excluded if status changes (ordel may report a second copy of letter as missing)
+    for r in required:
+        if r in excluded:
+            excluded = ''.join([x for x in excluded if r not in excluded])
+        
     # compose query
     # 'ordel -i 5 -p __ta_ -r u -e ee -z
     r = f'-r {required}' if required else ''

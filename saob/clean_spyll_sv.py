@@ -59,7 +59,7 @@ def make_word_list():
     sfxs = [x.replace('  ', ' ').split(' ') for x in aff if x[:3] == 'SFX']
     sfxs = [(x + [' '])[:5] for x in sfxs]
     d = {}
-    for kod in 'ACDEFGHImNP':
+    for kod in 'ACDEFGHImNPT':
         value = [x for x in sfxs if x[1] == kod]
         d.update({kod: value})
     sfxs = d
