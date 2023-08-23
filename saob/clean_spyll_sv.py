@@ -13,9 +13,11 @@ sfxs = None
 
 def conjugate_word(w, code):
     conj = []
-    if False and w[:5] == 'garva':
+    if False and w[:5] == 'nå':
         print(w)
     for c in code:
+        if False and c == 'M':
+            print(c)
         if c in sfxs:
             sfxs1 = sfxs[c]
             for sfx in sfxs1:
@@ -27,7 +29,13 @@ def conjugate_word(w, code):
                         if inside[0] == '^':
                             ignore = inside[1:]
                             accept = info[end+1:]
-                            if w[-1] in ignore + accept:
+                            #if w[-1] in ignore + accept:   was
+                                #continue
+                            if len(w) >= 2 and len(accept) >= 1 and w[-2] in ignore:
+                                continue
+                            if len(accept) >= 1 and w[-1] not in accept:
+                                continue
+                            if len(accept) == 0 and w[-1] in ignore:
                                 continue
                         else:
                             accept = inside
@@ -59,7 +67,7 @@ def make_word_list():
     sfxs = [x.replace('  ', ' ').split(' ') for x in aff if x[:3] == 'SFX']
     sfxs = [(x + [' '])[:5] for x in sfxs]
     d = {}
-    for kod in 'ACDEFGHImNPT':
+    for kod in 'ACDEFGHIKmMNPT':
         value = [x for x in sfxs if x[1] == kod]
         d.update({kod: value})
     sfxs = d
@@ -74,7 +82,7 @@ def make_word_list():
             continue
         w = s[0]
         out.append(w)
-        if w[:4] == 'gasa':
+        if w[:4] == 'nå':
             print(w)        if len(s) >= 2:
             code = s[1]
             code = code.split(' ')[0]

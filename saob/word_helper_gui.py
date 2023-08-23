@@ -19,9 +19,9 @@ label_color = []
 label_char = []
 keyboard = []
 keys = 'qwertyuiopåasdfghjklöäzxcvbnm'
-undefined_color = '#333'
+undefined_color = '#444'
 exclude_color = '#000'
-required_color = '#088'
+required_color = '#608'
 pattern_color = '#3a3'
 pattern = '_____'
 required = ''
@@ -156,7 +156,7 @@ def enter_word_cb(d):
     key_focus = True
     values = list(d.values())
     target = values[0]
-    print(target)
+    print('target: ', target)
 
 def do_scale(event):
     index = scale.get()
@@ -195,17 +195,20 @@ def play():
             excluded += label_char[k] if label_color[k] == exclude_color else ''
             required += label_char[k] if label_color[k] == required_color else '_'
     
-    # remove excluded if status changes (ordel may report a second copy of letter as missing)
+    # remove excluded if ´´ ordel reports a second copy of letter as missing
     for r in required:
-        if r in excluded:
-            excluded = ''.join([x for x in excluded if r not in excluded])
+        if r != '_' and r in excluded:
+            excluded = ''.join([x for x in excluded if r != x])
+    for p in pattern:
+        if p != '_' and p in excluded:
+            excluded = ''.join([x for x in excluded if p != x])
         
     # compose query
     # 'ordel -i 5 -p __ta_ -r u -e ee -z
     r = f'-r {required}' if required else ''
     e = f'-e {excluded}' if excluded else ''
     query = (f'ordel -i 5 -p {pattern} {r} {e} -z')
-    
+    print('query:  ', query)
     # send query
     n, lst = wh.call(query.split())
     s = ''
@@ -229,7 +232,7 @@ def play():
             keyboard[index].config(bg = color)
     
     # increment row
-    if row_index < 6:
+    if row_index < 5:
         row_index += 1
         char_index = 0
     return

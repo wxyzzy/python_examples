@@ -50,7 +50,7 @@ def get_word_list(word_length):
     filename = 'sv_SE2.txt'
     with open(filename, 'r', encoding='utf-8') as f:
         whole = f.read().replace('\r', '').split('\n')
-        print(len(whole))
+        #print(len(whole))
         if word_length:
             s = r"^([a-zåäö]{5})$".replace('5', str(word_length))
         else:
@@ -129,7 +129,7 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
-                if True and w == 'ankan':
+                if True and w == 'pågår':
                     print(w)
                 if len(w) != len(ap):
                     return False
@@ -160,7 +160,7 @@ def do_analysis(argv, i):
             return True
         #words = get_word_list(n)
         do_get_words(argv, i)
-        print('original words: ', len(words))
+        #print('original words: ', len(words))
         words = [w for w in words if test(w)]
         words = list(set(words))
         words.sort()
