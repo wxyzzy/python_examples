@@ -14,6 +14,7 @@ char_index = 0
 row_index = 0
 
 #button in the selection area
+window = None
 lbl = []
 label_color = []
 label_char = []
@@ -29,12 +30,12 @@ excluded = ''
 n_label = None
 word_label = None
 scale = None
-text = None
+text_ = None
 key_focus = True
 target = ''
 
 def main():
-    global lbl, keyboard, keys, n_label, word_label, scale, text
+    global window, lbl, keyboard, keys, n_label, word_label, scale, text_
     window = tk.Tk()
     window.title("ordel helper")
     window.geometry("820x550")
@@ -84,11 +85,11 @@ def main():
     # hint
     frame4 = tk.Frame(window, height=100, width=450, bg="#555")
     frame4.grid(row=3, column=1, padx=4, pady=4, columnspan=2)
-    text = 'hint - words found: 0'
-    n_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text, justify=tk.CENTER)
+    text_ = 'hint - words found: 0'
+    n_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
     n_label.grid(row=1, column=0, padx=2, pady=2, sticky=tk.W)
-    text = '[]'
-    #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text, justify=tk.CENTER)
+    text_ = '[]'
+    #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
     #word_label.grid(row=2, column=0, padx=2, pady=2, sticky=tk.W)
     
     # scroll text within word_label
