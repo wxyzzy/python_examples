@@ -32,7 +32,8 @@ Option -r may have multiple patterns such as __r__,r___a.
    This removes words with r if in position 0, 2 and a if in position 4
 '''
 
-def do_help(argv, i): print(help)
+def do_help(argv, i):
+    print(help)
 
 def get_field(argv, i):
     # file name may appear in the i+1 position
@@ -220,21 +221,22 @@ def call(argv):
     result = action(argv, opts)
     return result
 
-def main(argv):
-    # parse for '-' options
-    n = len(argv)
-    if n <= 1:
-        # example from wordfeud where given pattern and allowed char is used
-        params = '-w -p lla -a slixel -z'
-        # example from wordel where word length is 5'
-        params = '-i 5 -p __dan -e rolåme -z'
-        argv = [argv[0]] + params.split()
-    opts = parse_options(argv)
-    result = action(argv, opts)
-    if type(result) == tuple and len(result) == 2:
-        print('words_found: ', result[0])
-        print(result[1])    
-    
+
 if __name__ == "__main__":
+    def main(argv):
+        # parse for '-' options
+        n = len(argv)
+        if n <= 1:
+            # example from wordfeud where given pattern and allowed char is used
+            params = '-w -p lla -a slixel -z'
+            # example from wordel where word length is 5'
+            params = '-i 5 -p __dan -e rolåme -z'
+            argv = [argv[0]] + params.split()
+        opts = parse_options(argv)
+        result = action(argv, opts)
+        if type(result) == tuple and len(result) == 2:
+            print('words_found: ', result[0])
+            print(result[1])    
+    
     main(sys.argv)
     
