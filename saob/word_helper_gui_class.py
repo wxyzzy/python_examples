@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ordel helper
 # Copyright 2023 James Nash. Licensed under the MIT license.
 
@@ -8,6 +7,7 @@ from tkinter import messagebox
 import word_helper as wh
 from functools import partial
 from form import query_form, query_result
+
 
 # In frame1 the current row and char index is:
 
@@ -22,7 +22,7 @@ class Klass:
         self.label_color = []
         self.label_char = []
         self.keyboard = []
-        self.keys = 'qwertyuiopÃ¥asdfghjklÃ¶Ã¤zxcvbnm'
+        self.keys = 'qwertyuiopåasdfghjklöäzxcvbnm'
         self.undefined_color = '#444'
         self.exclude_color = '#000'
         self.required_color = '#608'
@@ -103,7 +103,7 @@ class Klass:
         self.word_label.config(yscrollcommand=self.scale.set)
         array = 'Ordel Helper (Swedish) may be used beside Ordel.se or Ordel app to help find valid words. \n'
         array += 'Enter the same word used in Ordel.se, click on each letter to change its color, and click on "Play".\n'
-        array += 'Or click on "Random" or "Enter" to create a self.target word and play Ordel Helper by itself.'
+        array += 'Or click on "Random" or "Enter" to create a self.target word and self.play Ordel Helper by itself.'
         self.word_label.insert(tk.END, array)
 
         self.window.bind_all('<Key>', self.key)
@@ -112,9 +112,9 @@ class Klass:
     def color_selection(self, index):
         b = self.lbl[index]
         if self.label_color[index] == self.undefined_color: self.label_color[index] = self.exclude_color
-        elif self.label_color[index] == self.exclude_color: self.label_color[index] = self.self.required_color
-        elif self.label_color[index] == self.self.required_color: self.label_color[index] = self.self.pattern_color
-        elif self.label_color[index] == self.self.pattern_color: self.label_color[index] = self.undefined_color
+        elif self.label_color[index] == self.exclude_color: self.label_color[index] = self.required_color
+        elif self.label_color[index] == self.required_color: self.label_color[index] = self.pattern_color
+        elif self.label_color[index] == self.pattern_color: self.label_color[index] = self.undefined_color
         b.config(bg = self.label_color[index])
 
             # select row and column
@@ -145,7 +145,7 @@ class Klass:
 
     def do_enter_word(self):
         self.key_focus = False
-        d = {'5 letter self.target word': '', 'callback': enter_word_cb}
+        d = {'5 letter self.target word': '', 'callback': self.enter_word_cb}
         query_form(d)
             # results gotten asynchrously using query_result()
 
@@ -166,10 +166,10 @@ class Klass:
             for i, w in enumerate(word):
                 j = self.row_index * 5 + i
                 if w == self.target[i]:
-                    self.label_color[j] = self.self.pattern_color
+                    self.label_color[j] = self.pattern_color
                     self.lbl[j].config(bg = self.label_color[j])
                 elif w in self.target:
-                    self.label_color[j] = self.self.required_color
+                    self.label_color[j] = self.required_color
                     self.lbl[j].config(bg = self.label_color[j])
                 else:
                     self.label_color[j] = self.exclude_color
@@ -180,7 +180,7 @@ class Klass:
         self.required = ''
         self.excluded = ''
         for i in range(self.row_index * 5, self.row_index * 5 + 5):
-            self.pattern += self.label_char[i] if self.label_color[i] == self.self.pattern_color else '_'
+            self.pattern += self.label_char[i] if self.label_color[i] == self.pattern_color else '_'
         for i in range(self.row_index + 1):
                     # 'required' can look like '____r,__r__' to show where r cannot be
             if i != 0:
@@ -188,9 +188,9 @@ class Klass:
             for j in range(5):
                 k = i * 5 + j
                 self.excluded += self.label_char[k] if self.label_color[k] == self.exclude_color else ''
-                self.required += self.label_char[k] if self.label_color[k] == self.self.required_color else '_'
+                self.required += self.label_char[k] if self.label_color[k] == self.required_color else '_'
 
-            # remove excluded if Â´Â´ ordel reports a second copy of letter as missing
+            # remove excluded if ´´ ordel reports a second copy of letter as missing
         for r in self.required:
             if r != '_' and r in self.excluded:
                 self.excluded = ''.join([x for x in self.excluded if r != x])
@@ -234,8 +234,8 @@ class Klass:
 
     def use_char(self, ch):
         if ch == '\r':
-            play()
-        elif (self.char_index < 5 and self.row_index < 6 and ch in 'qwertyuiopÃ¥asdfghjklÃ¶Ã¤zxcvbnm'):
+            self.play()
+        elif (self.char_index < 5 and self.row_index < 6 and ch in 'qwertyuiopåasdfghjklöäzxcvbnm'):
             index = self.char_index + self.row_index * 5
             self.lbl[index].config(text=ch)
             self.label_char[index] = ch
@@ -249,19 +249,19 @@ class Klass:
     def key(self, event):
         if not self.key_focus:
             return False
-        if event.char == event.self.keysym:
+        if event.char == event.keysym:
             msg = 'Normal Key %r' % event.char
             ch = event.char
-        elif event.char in 'Ã¥Ã¤Ã¶\r':
+        elif event.char in 'åäö\r':
             ch = event.char
         elif len(event.char) == 1:
-            msg = 'Punctuation Key %r (%r)' % (event.self.keysym, event.char)
+            msg = 'Punctuation Key %r (%r)' % (event.keysym, event.char)
             ch = 'BS'
         else:
-            msg = 'Special Key %r' % event.self.keysym
+            msg = 'Special Key %r' % event.keysym
             ch = ''
             #label1.config(text=msg)
-        use_char(ch)
+        self.use_char(ch)
 
 k = Klass()
 k.main()
