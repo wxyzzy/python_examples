@@ -65,15 +65,6 @@ def convert(source):
                     s += object_prefix
                 s += t
             line = s       
-            #while v in line[search_start:] and search_start < len(line):
-                #istart = line[search_start:].index(v) + search_start
-                #iend = istart + len(v)
-                #remainder = line[iend:]
-                #non_token_char = remainder == '' or remainder[0] not in token_chars
-                #if istart >= 0 and non_token_char:
-                    #line = line[:istart] + obj_prefix + line[istart:]
-                #search_start = iend + len(obj_prefix)
-        
         return line
     
     def starts_with(line, *substr):
@@ -90,7 +81,7 @@ def convert(source):
         in_init = False
         in_comment = False
         test_area = False
-        obj_prefix = 'self.'
+        object_prefix = 'self.'
         for line in lines:
             start = leading(line)
             if 'if __name__' in line:
@@ -123,7 +114,7 @@ def convert(source):
                     in_init = True
                 if line[start:start+6] == 'global':
                     pass
-                elif line[start:start+3] == 'def':
+                elif line[start:start+3] == 'def' and start == 0:
                     if in_init:
                         s += s1 + end
                         in_init = False
@@ -137,7 +128,7 @@ def convert(source):
                 elif start == 0 and ' = ' in line:
                     if pass_ == 0:
                         var.append(line.split(' = ')[0])
-                    s1 += leading(8) + obj_prefix + line + end
+                    s1 += leading(8) + object_prefix + line + end
         if test_area:
             s += 'obj.main()' + end
         else:

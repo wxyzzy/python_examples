@@ -60,25 +60,25 @@ class Klass:
             else:
                 s = r"^([a-zåäö]+)$"
             pat = re.compile(s)
-            obj.words = [w for w in whole if pat.match(w)]
-        return obj.words
+            self.words = [w for w in whole if pat.match(w)]
+        return self.words
 
     def get_random_word(self, word_length):
         import random
-        obj.words = obj.get_word_list(word_length)
-        n = len(obj.words)
+        self.words = self.get_word_list(word_length)
+        n = len(self.words)
         i = random.randint(0, n)
-        return obj.words[i]
+        return self.words[i]
 
     def do_get_words(self, argv, i):
         # given word length, load words
-        n = obj.get_field(argv, i)
-        obj.words = obj.get_word_list(n)
+        n = self.get_field(argv, i)
+        self.words = self.get_word_list(n)
 
     def do_analysis(self, argv, i):
         # type of analysis depends on global variables 
-        ap, al, el = obj.accept_pattern, obj.accept_letters, obj.exclude_letters
-        rl = obj.required_letters.split(',')
+        ap, al, el = self.accept_pattern, self.accept_letters, self.exclude_letters
+        rl = self.required_letters.split(',')
         n = len(ap)
         allowed = [chr(x) for x in range(ord('a'), ord('z') + 1)]
         allowed += [x for x in 'åäö']
@@ -88,13 +88,13 @@ class Klass:
             # summarize number of words of various lengths
             print('word_len\tn_found\texample')
             for n in range(1, 40):
-                obj.words = obj.get_word_list(n) 
-                n_found = len(obj.words)
-                print(str(n) + '\t' + str(n_found) + '\t' + ', '.join(obj.words[:5]))
+                self.words = self.get_word_list(n) 
+                n_found = len(self.words)
+                print(str(n) + '\t' + str(n_found) + '\t' + ', '.join(self.words[:5]))
         elif n:
-            def test(self, w):
+            def test(w):
                 nonlocal allowed
-                if ap and obj.wordfeud:
+                if ap and self.wordfeud:
                     # test various offsets between ap and w so as to include
                     # ap, less the required ap with stripped underscore
                     # plus the actual non _ characters
@@ -131,7 +131,7 @@ class Klass:
                             return True
                     return False
                 elif ap:
-                    if True and w == 'pågår':
+                    if True and w == 'grupp':
                         print(w)
                     if len(w) != len(ap):
                         return False
@@ -141,7 +141,7 @@ class Klass:
                     for i, ch in enumerate(w):
                         if ap[i] != '_' and ap[i] != ch:
                             return False
-                        if ch in obj.exclude_letters:
+                        if ch in self.exclude_letters:
                             return False
                     for r in rl:
                         for i, ch in enumerate(r):
@@ -161,39 +161,39 @@ class Klass:
                                 return False
                 return True
             #words = get_word_list(n)
-            obj.do_get_words(argv, i)
+            self.do_get_words(argv, i)
             #print('original words: ', len(words))
-            obj.words = [w for w in obj.words if obj.test(w)]
-            obj.words = list(set(obj.words))
-            obj.words.sort()
-            n_found = len(obj.words)
-            return n_found, obj.words
+            self.words = [w for w in self.words if test(w)]
+            self.words = list(set(self.words))
+            self.words.sort()
+            n_found = len(self.words)
+            return n_found, self.words
 
 
     def do_accept_pattern(self, argv, i):
-        x = obj.get_field(argv, i)
-        obj.accept_pattern = x
+        x = self.get_field(argv, i)
+        self.accept_pattern = x
 
     def do_accept_letters(self, argv, i):
-        x = obj.get_field(argv, i)
-        obj.accept_letters = x
+        x = self.get_field(argv, i)
+        self.accept_letters = x
 
     def do_exclude_letters(self, argv, i):
-        x = obj.get_field(argv, i)
-        obj.exclude_letters = x
+        x = self.get_field(argv, i)
+        self.exclude_letters = x
 
     def do_required_letters(self, argv, i):
-        x = obj.get_field(argv, i)
-        obj.required_letters = x
+        x = self.get_field(argv, i)
+        self.required_letters = x
 
     def do_wordfeud(self, argv, i):
-        obj.wordfeud = True
+        self.wordfeud = True
 
     def action(self, argv, opts):
         # do something for various '-' options
-        switch = {'h':obj.do_help, 'i':obj.do_get_words, 'p':obj.do_accept_pattern,
-                  'a':obj.do_accept_letters, 'e':obj.do_exclude_letters, 
-                  'r':obj.do_required_letters, 'w':obj.do_wordfeud, 'z':obj.do_analysis}
+        switch = {'h':self.do_help, 'i':self.do_get_words, 'p':self.do_accept_pattern,
+                  'a':self.do_accept_letters, 'e':self.do_exclude_letters, 
+                  'r':self.do_required_letters, 'w':self.do_wordfeud, 'z':self.do_analysis}
         for ch, i in opts:
             if ch in switch:
                 result = switch[ch](argv, i)
@@ -213,8 +213,8 @@ class Klass:
         # this is the entry point for main programs that call this module
         # argv is a list containing the name of the program, followed by parameters
         # the result is a tuple containing length and word list
-        opts = obj.parse_options(argv)
-        result = obj.action(argv, opts)
+        opts = self.parse_options(argv)
+        result = self.action(argv, opts)
         return result
 
 
@@ -237,4 +237,3 @@ if __name__ == "__main__":
     
     main(sys.argv)
     
-obj.main()

@@ -130,7 +130,7 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
-                if True and w == 'pågår':
+                if True and w == 'grupp':
                     print(w)
                 if len(w) != len(ap):
                     return False
