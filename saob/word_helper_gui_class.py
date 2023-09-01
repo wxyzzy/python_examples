@@ -7,9 +7,9 @@ from tkinter import messagebox
 from functools import partial
 from form import query_form, query_result
 
-
 import word_helper_class as wh
 wh = wh.Klass()
+
 
 # In frame1 the current row and char index is:
 
@@ -45,7 +45,7 @@ class Klass:
         self.window.geometry("820x550")
         self.window.configure(bg='#555')
 
-            # selection, 5 characters by 6 attempts
+        # selection, 5 characters by 6 attempts
         frame1 = tk.Frame(self.window, height=300, width=200, bg="#555")
         frame1.grid(row=1, column=1, padx=4, pady=4)
         self.lbl = []
@@ -61,7 +61,7 @@ class Klass:
                 self.label_color.append(self.undefined_color)
                 self.label_char.append('')
 
-            # keyboard
+        # keyboard
         frame2 = tk.Frame(self.window, height=300, width=450, bg="#555")
         frame2.grid(row=1, column=2, padx=4, pady=4)
         for i in range(3):
@@ -74,7 +74,7 @@ class Klass:
                     a.grid(row=i, column=j, padx=2, pady=2)
                     self.keyboard.append(a)
 
-            # actions
+        # actions
         frame3 = tk.Frame(self.window, height=100, width=450, bg="#555")
         frame3.grid(row=2, column=1, padx=4, pady=4)
         btn = tk.Button(frame3, text="Restart", bg=self.undefined_color, fg='#ffa', command=self.do_restart)
@@ -86,17 +86,17 @@ class Klass:
         btn = tk.Button(frame3, text="Spela", bg=self.undefined_color, fg='#ffa', command=self.play)
         btn.grid(row=1, column=4, padx=2)
 
-            # hint
+        # hint
         frame4 = tk.Frame(self.window, height=100, width=450, bg="#555")
         frame4.grid(row=3, column=1, padx=4, pady=4, columnspan=2)
         self.text_ = 'hint - words found: 0'
         self.n_label = tk.Label(frame4, bg=self.undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=self.text_, justify=tk.CENTER)
         self.n_label.grid(row=1, column=0, padx=2, pady=2, sticky=tk.W)
         self.text_ = '[]'
-            #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
-            #word_label.grid(row=2, column=0, padx=2, pady=2, sticky=tk.W)
+        #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
+        #word_label.grid(row=2, column=0, padx=2, pady=2, sticky=tk.W)
 
-            # scroll text within word_label
+        # scroll text within word_label
         self.word_label = tk.Text(frame4, bg=self.undefined_color, pady=2, fg='#ffa', width=100, height=5)
         self.word_label.grid(row=2, column=0)
         self.scale = tk.Scrollbar(frame4, bg=self.undefined_color, bd=0, 
@@ -119,7 +119,7 @@ class Klass:
         elif self.label_color[index] == self.pattern_color: self.label_color[index] = self.undefined_color
         b.config(bg = self.label_color[index])
 
-            # select row and column
+        # select row and column
         self.row_index = index // 5
         self.char_index = index % 5
         return
@@ -149,7 +149,7 @@ class Klass:
         self.key_focus = False
         d = {'5 letter self.target word': '', 'callback': self.enter_word_cb}
         query_form(d)
-            # results gotten asynchrously using query_result()
+        # results gotten asynchrously using query_result()
 
     def enter_word_cb(self, d):
         self.key_focus = True
@@ -162,7 +162,7 @@ class Klass:
         self.word_label.config()
 
     def play(self):
-            # process target word if defined
+        # process target word if defined
         if self.target:
             word = self.label_char[self.row_index * 5: self.row_index * 5 + 5]
             for i, w in enumerate(word):
@@ -177,14 +177,14 @@ class Klass:
                     self.label_color[j] = self.exclude_color
                     self.lbl[j].config(bg = self.label_color[j])
 
-            # collect information
+        # collect information
         self.pattern = ''
         self.required = ''
         self.excluded = ''
         for i in range(self.row_index * 5, self.row_index * 5 + 5):
             self.pattern += self.label_char[i] if self.label_color[i] == self.pattern_color else '_'
         for i in range(self.row_index + 1):
-                    # 'required' can look like '____r,__r__' to show where r cannot be
+            # 'required' can look like '____r,__r__' to show where r cannot be
             if i != 0:
                 self.required += ','
             for j in range(5):
@@ -192,7 +192,7 @@ class Klass:
                 self.excluded += self.label_char[k] if self.label_color[k] == self.exclude_color else ''
                 self.required += self.label_char[k] if self.label_color[k] == self.required_color else '_'
 
-            # remove excluded if ´´ ordel reports a second copy of letter as missing
+        # remove excluded if ´´ ordel reports a second copy of letter as missing
         for r in self.required:
             if r != '_' and r in self.excluded:
                 self.excluded = ''.join([x for x in self.excluded if r != x])
@@ -200,13 +200,13 @@ class Klass:
             if p != '_' and p in self.excluded:
                 self.excluded = ''.join([x for x in self.excluded if p != x])
 
-            # compose query
-            # 'ordel -i 5 -p __ta_ -r u -e ee -z
+        # compose query
+        # 'ordel -i 5 -p __ta_ -r u -e ee -z
         r = f'-r {self.required}' if self.required else ''
         e = f'-e {self.excluded}' if self.excluded else ''
         query = (f'ordel -i 5 -p {self.pattern} {r} {e} -z')
         print('query:  ', query)
-            # send query
+        # send query
         n, lst = wh.call(query.split())
         s = ''
         for i, w in enumerate(lst):
@@ -220,7 +220,7 @@ class Klass:
         self.word_label.delete("1.0", tk.END)
         self.word_label.insert("1.0", array)
 
-            # modify keyboard colors
+        # modify keyboard colors
         for i in range(self.row_index * 5, self.row_index * 5 + 5):
             ch = self.label_char[i]
             color = self.label_color[i]
@@ -228,7 +228,7 @@ class Klass:
                 index = self.keys.find(ch)
                 self.keyboard[index].config(bg = color)
 
-            # increment row
+        # increment row
         if self.row_index < 5:
             self.row_index += 1
             self.char_index = 0
@@ -262,8 +262,8 @@ class Klass:
         else:
             msg = 'Special Key %r' % event.keysym
             ch = ''
-            #label1.config(text=msg)
+        #label1.config(text=msg)
         self.use_char(ch)
 
-k = Klass()
-k.main()
+obj = Klass()
+obj.main()

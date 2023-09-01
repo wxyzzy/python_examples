@@ -4,9 +4,11 @@
 
 import tkinter as tk
 from tkinter import messagebox
-import word_helper as wh
 from functools import partial
 from form import query_form, query_result
+
+import word_helper as wh
+#wh = wh.Klass()
 
 
 # In frame1 the current row and char index is:

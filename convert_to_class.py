@@ -130,7 +130,7 @@ def convert(source):
                         var.append(line.split(' = ')[0])
                     s1 += leading(8) + object_prefix + line + end
         if test_area:
-            s += 'obj.main()' + end
+            pass
         else:
             s += 'obj = Klass()' + end
             s += 'obj.main()' + end
@@ -138,10 +138,14 @@ def convert(source):
 
 def main():
     print('start')
-    with open('saob/word_helper.py', 'r', encoding='utf-8') as fin:
+    inname = "saob/word_helper.py"
+    inname = "saob/word_helper_gui.py"
+    outname = inname.split('.')
+    outname = outname[0] + '_class.' + outname[1]
+    with open(inname, 'r', encoding='utf-8') as fin:
         source = fin.read()
         result = convert(source)
-        with open('saob/word_helper_class.py', 'w', encoding='utf-8') as fout:
+        with open(outname, 'w', encoding='utf-8') as fout:
             fout.write(result)
     print('done')
 
