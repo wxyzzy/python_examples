@@ -87,8 +87,9 @@ def main():
     # hint
     frame4 = tk.Frame(window, height=100, width=450, bg="#555")
     frame4.grid(row=3, column=1, padx=4, pady=4, columnspan=2)
-    text_ = 'hint - words found: 0'
-    n_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
+    text_ = 'words found: 0'
+    n_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, 
+                       padx=2, pady=2, text=text_, justify=tk.CENTER)
     n_label.grid(row=1, column=0, padx=2, pady=2, sticky=tk.W)
     text_ = '[]'
     #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
@@ -124,7 +125,7 @@ def color_selection(index):
     return
 
 def do_restart():
-    global char_index, row_index, lbl, label_color, label_char
+    global char_index, row_index, lbl, label_color, label_char, word_label
     global pattern, required, excluded, target
     char_index = 0
     row_index = 0
@@ -138,6 +139,8 @@ def do_restart():
     required = ''
     excluded = ''
     target = ''
+    n_label.config(text='number of words')
+    word_label.delete("1.0", tk.END)
     
 def do_random_word():
     global target

@@ -89,8 +89,9 @@ class Klass:
         # hint
         frame4 = tk.Frame(self.window, height=100, width=450, bg="#555")
         frame4.grid(row=3, column=1, padx=4, pady=4, columnspan=2)
-        self.text_ = 'hint - words found: 0'
-        self.n_label = tk.Label(frame4, bg=self.undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=self.text_, justify=tk.CENTER)
+        self.text_ = 'words found: 0'
+        self.n_label = tk.Label(frame4, bg=self.undefined_color, fg='#ffa', width=100, height=2, 
+                           padx=2, pady=2, text=self.text_, justify=tk.CENTER)
         self.n_label.grid(row=1, column=0, padx=2, pady=2, sticky=tk.W)
         self.text_ = '[]'
         #word_label = tk.Label(frame4, bg=undefined_color, fg='#ffa', width=100, height=2, padx=2, pady=2, text=text_, justify=tk.CENTER)
@@ -137,6 +138,8 @@ class Klass:
         self.required = ''
         self.excluded = ''
         self.target = ''
+        self.n_label.config(text='number of words')
+        self.word_label.delete("1.0", tk.END)
 
     def do_random_word(self):
         ok = messagebox.askokcancel('Random word', 'Select random word from dictionary')
