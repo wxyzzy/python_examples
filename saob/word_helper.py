@@ -17,20 +17,23 @@ words = None
 
 help = '''
 parse [[options] file]
+where [options] = [option extra_word]
 options (preceded by '-' character):
-    a - enter accept letters that are allowed
-    i - load n letter words where n follows the option
-    e - enter exclude letters such as in wordel game
+    i - limit dictionary to n letter words
+    a - enter accept letters that are allowed (wordfeud)
+    r - enter required letters (wordel), can be a pattern like __r__
+    e - enter exclude letters (wordel)
     p - enter accept pattern (including _ for wildcard)
-    r - enter required letters such as in wordel game
-    w - force wordfeud rules on pattern matching (relaxed)
+    w - force wordfeud rules on pattern matching (not wordel)
     z - do analysis producing a list of words
 
 This set of scripts starts with (soal.txt) word list.
-Option -i removes words that are not used in.
+Option -r may have multiple patterns such as __r__,r___a.
+   This removes words with r if in position 0, 2 and a if in position 4
 '''
 
-def do_help(argv, i): print(help)
+def do_help(argv, i):
+    print(help)
 
 def get_field(argv, i):
     # file name may appear in the i+1 position
@@ -48,7 +51,7 @@ def get_word_list(word_length):
     filename = 'sv_SE2.txt'
     with open(filename, 'r', encoding='utf-8') as f:
         whole = f.read().replace('\r', '').split('\n')
-        print(len(whole))
+        #print(len(whole))
         if word_length:
             s = r"^([a-zåäö]{5})$".replace('5', str(word_length))
         else:
@@ -57,6 +60,13 @@ def get_word_list(word_length):
         words = [w for w in whole if pat.match(w)]
     return words
 
+def get_random_word(word_length):
+    import random
+    words = get_word_list(word_length)
+    n = len(words)
+    i = random.randint(0, n)
+    return words[i]
+    
 def do_get_words(argv, i):
     # given word length, load words
     global words
@@ -67,7 +77,7 @@ def do_analysis(argv, i):
     # type of analysis depends on global variables 
     global accept_pattern, accept_letters, exclude_letters, words
     ap, al, el = accept_pattern, accept_letters, exclude_letters
-    rl = required_letters
+    rl = required_letters.split(',')
     n = len(ap)
     allowed = [chr(x) for x in range(ord('a'), ord('z') + 1)]
     allowed += [x for x in 'åäö']
@@ -87,7 +97,7 @@ def do_analysis(argv, i):
                 # test various offsets between ap and w so as to include
                 # ap, less the required ap with stripped underscore
                 # plus the actual non _ characters
-                if w == 'henne':
+                if False and w == 'henne':
                     print(w)
                 len0 = len(ap)
                 ap1 = ap.rstrip('_').lstrip('_')  # ignore outside required letters
@@ -132,25 +142,31 @@ def do_analysis(argv, i):
                         return False
                     if ch in exclude_letters:
                         return False
-                for ch in rl:
-                    if ch not in w:
-                        return False
+                for r in rl:
+                    for i, ch in enumerate(r):
+                        if ch != '_' and ch not in w:
+                            return False
+                        # rl shows a pattern of where required letters are; 
+                        # the letter does not belong in this position
+                        if '_' in r and ch != '_' and ch == w[i]:
+                            return False
             else:
                 for ch in w:
                     if ch not in allowed:
                         return False
-            if rl:
-                for ch in rl:
-                    if ch not in w:
-                        return False
+                for r in rl:
+                    for ch in r:
+                        if ch not in w:
+                            return False
             return True
         #words = get_word_list(n)
         do_get_words(argv, i)
-        print('original words: ', len(words))
+        #print('original words: ', len(words))
         words = [w for w in words if test(w)]
+        words = list(set(words))
+        words.sort()
         n_found = len(words)
-        print('words_found: ', n_found)
-        print(words)
+        return n_found, words
         
         
 def do_accept_pattern(argv, i):
@@ -184,7 +200,9 @@ def action(argv, opts):
               'r':do_required_letters, 'w':do_wordfeud, 'z':do_analysis}
     for ch, i in opts:
         if ch in switch:
-            switch[ch](argv, i)
+            result = switch[ch](argv, i)
+            if ch == 'z':
+                return result
             
 def parse_options(argv):
     # option and position i is saved in opts
@@ -204,9 +222,31 @@ def main(argv):
         # example from wordel where word length is 5'
         params = '-i 5 -p _i_er -e ltmxgvbönad -z'
         argv = [argv[0]] + params.split()
+
+def call(argv):
+    # this is the entry point for main programs that call this module
+    # argv is a list containing the name of the program, followed by parameters
+    # the result is a tuple containing length and word list
     opts = parse_options(argv)
-    action(argv, opts)
-    
+    result = action(argv, opts)
+    return result
+
+
 if __name__ == "__main__":
+    def main(argv):
+        # parse for '-' options
+        n = len(argv)
+        if n <= 1:
+            # example from wordfeud where given pattern and allowed char is used
+            params = '-w -p lla -a slixel -z'
+            # example from wordel where word length is 5'
+            params = '-i 5 -p __dan -e rolåme -z'
+            argv = [argv[0]] + params.split()
+        opts = parse_options(argv)
+        result = action(argv, opts)
+        if type(result) == tuple and len(result) == 2:
+            print('words_found: ', result[0])
+            print(result[1])    
+    
     main(sys.argv)
     
