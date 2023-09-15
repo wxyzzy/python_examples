@@ -89,20 +89,20 @@ def do_analysis(argv, i):
                 # plus the actual non _ characters
                 if w == 'henne':
                     print(w)
-                ap1 = ap.rstrip('_').lstrip('_')
+                len0 = len(ap)
+                ap1 = ap.rstrip('_').lstrip('_')  # ignore outside required letters
                 len1 = len(ap1)
-                ap2 = [x for x in ap1 if x != '_']
-                max_offset = len(w) - len1
+                ap2 = [x for x in ap1 if x != '_']  # required letters
+                max_offset = len(w) - len0
                 for offset in range(max_offset):
                     # convolve ap1 over w
                     oks = []   # collect ok results for each ap1 character
                     allowed1 = allowed.copy()
-                    for i, apx in enumerate(ap1):
+                    for i, apx in enumerate(ap):
                         ok = False
                         if apx == '_':
                             if w[i] in allowed1:
-                                ok = True
-                                # remove wordfeud tile
+                                ok = True 
                                 k = allowed1.index(w[i])
                                 del allowed1[k]
                         else:
@@ -120,7 +120,7 @@ def do_analysis(argv, i):
                         return True
                 return False
             elif ap:
-                if w == 'garva':
+                if False and w[-2:] == 'er' and 'a' not in w:
                     print(w)
                 if len(w) != len(ap):
                     return False
@@ -200,9 +200,9 @@ def main(argv):
     n = len(argv)
     if n <= 1:
         # example from wordfeud where given pattern and allowed char is used
-        params = '-w -p lla -a slixel -z'
+        #params = '-w -p _lla -a slxel -z'
         # example from wordel where word length is 5'
-        params = '-i 5 -p ga_ar -e debnj -z'
+        params = '-i 5 -p _i_er -e ltmxgvbönad -z'
         argv = [argv[0]] + params.split()
     opts = parse_options(argv)
     action(argv, opts)
